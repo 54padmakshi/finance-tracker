@@ -120,7 +120,7 @@ function SignupSigninComponent() {
             setLoading(false);
           }
         }else{
-          toast.error("Doc already Exists!");
+          //toast.error("Doc already Exists!");
           setLoading(false);
         }                   
     }

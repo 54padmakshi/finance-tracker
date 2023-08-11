@@ -78,8 +78,11 @@ try{
               console.log("results>>>",results);
                  for(const transaction of results.data){  //use addtrasaction function here , to take it from firebase
                  console.log("Transactions", transaction);
+
+                   const amountString = transaction.amount ? transaction.amount.trim().replace(/,/g, '') : '';
+                 const parsedAmount = amountString ? parseFloat(amountString) : 0; 
                  const newTransaction = {...transaction,
-          amount: parseFloat(transaction.amount),
+          amount: isNaN(parsedAmount) ? 0 : parsedAmount,
         };
         await addTransaction(newTransaction, true);
 
@@ -88,11 +91,12 @@ try{
      });
      toast.success("All Transactions Added");
      fetchTransactions();     
-     event.target.files = null;
+     event.target.value = null;
 }
 catch(error){
-
+  toast.error(error.message);
 }
+
 }
 
   return (

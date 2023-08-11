@@ -41,7 +41,10 @@ useEffect(()=>{
     <div className='navbar'> 
     <p style={{color: "var(--white)" , fontWeight: 500 }}>Financely.</p>
     {user && (<div style={{display:'flex',alignItems:'center',gap:'0.75rem'}}>
+    {/** trying to display the username */}
+    
     <img src={user.photoURL ? user.photoURL: userImg } alt={user.photoURL ? user.photoURL: userImg } style={{borderRadius:'50%',height:'1.5rem' ,width:'1.5rem'}}/>
+     
      <p className="logo link" onClick={logoutfunc}>Logout</p> </div>) }
     </div>
   )

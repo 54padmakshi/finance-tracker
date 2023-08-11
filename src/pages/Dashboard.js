@@ -68,7 +68,7 @@ const [balance,setBalance] = useState(0);
      addTransaction(newTransaction);
   }
 
-  async function addTransaction(transaction,many) {
+  /*async function addTransaction(transaction,many) {
     try {
       const docRef = await addDoc(collection(db,`users/${user.uid}/transactions`),transaction);
       console.log("Document written with ID: ",docRef.id);
@@ -82,6 +82,20 @@ const [balance,setBalance] = useState(0);
       console.log("Error in Adding Document: ",error);
      if(!many) toast.error("Couldn't Add Transaction!");
     }
+  }   */
+
+  async function addTransaction(transaction, many) {
+    try {
+      const docRef = await addDoc(collection(db, `users/${user.uid}/transactions`), transaction);
+      console.log("Document written with ID: ", docRef.id);
+      if (!many) toast.success("Transaction Added!");
+       //adding new Transactions
+      setTransactions((prevTransactions) => [...prevTransactions, transaction]); // Use functional update pattern
+      calculateBalance(); // Calculate balance based on updated transactions
+    } catch (error) {
+      console.log("Error in Adding Document: ", error);
+      if (!many) toast.error("Couldn't Add Transaction!");
+    }
   }
 
   useEffect(() => {
@@ -89,7 +103,7 @@ const [balance,setBalance] = useState(0);
     fetchTransactions();  
     },[]);   //user
 
-  useEffect(()=>calculateBalance(),[transactions]);
+ 
 
   const calculateBalance = ()=>{
     let incomeTotal=0;
@@ -104,26 +118,33 @@ const [balance,setBalance] = useState(0);
          }
     });
     setIncome(incomeTotal);
+    console.log("incometotoal>>",incomeTotal);
     setExpense(expensesTotal);
+    console.log("expensesTotal",expensesTotal);
     setBalance(incomeTotal-expensesTotal);
+    console.log("inct-ext>>",incomeTotal-expensesTotal);
   }
 
+  useEffect(()=>calculateBalance(),[transactions]);
+
+  
+  
   async function fetchTransactions() {
     setLoading(true);
     if (user) {
-      const q= query(collection(db,`users/${user.uid}/transactions`));
-      const querySnapshot= await getDocs(q);
+      const q = query(collection(db, `users/${user.uid}/transactions`));
+      const querySnapshot = await getDocs(q);
       let transactionsArray = [];
-      querySnapshot.forEach((doc)=>{        
+      querySnapshot.forEach((doc) => {
         transactionsArray.push(doc.data());
-       })
-
+      });
+  
       setTransactions(transactionsArray);
+      calculateBalance(); // Move calculateBalance here
       console.log("Transactions", transactionsArray);
-      toast.success("Transactions Fetched!");
-    } 
-      
-   setLoading(false);
+    }
+  
+    setLoading(false);
   }
   
   let sortedTransactions = transactions.sort((a,b) => {
